@@ -41,10 +41,12 @@ $(dst)/%.dtbo: $(obj)/%.dtbo
 $(dst)/%.scr: $(obj)/%.scr
 	$(call cmd,dtb_install)
 
-$(dst)/README.rk322x-overlays: $(src)/README.rk322x-overlays
+
+# Install textual overlay descriptors listed in dtbotxt-y.
+$(dst)/README.%: $(src)/README.%
 	$(call cmd,dtb_install)
 
-$(dst)/README.rockchip-overlays: $(src)/README.rockchip-overlays
+$(dst)/%-default-overlays.txt: $(src)/%-default-overlays.txt
 	$(call cmd,dtb_install)
 
 PHONY += $(subdirs)
