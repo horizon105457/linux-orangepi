@@ -1,0 +1,61 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	/* Keep USB host paths enabled for USB Wi-Fi/Ethernet dongles */
+	fragment@0 {
+		target = <&u2phy2_host>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@1 {
+		target = <&u2phy3_host>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@2 {
+		target = <&usb_host0_ehci>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@3 {
+		target = <&usb_host0_ohci>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4 {
+		target = <&usb_host1_ehci>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5 {
+		target = <&usb_host1_ohci>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@6 {
+		target = <&usbhost3_0>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@7 {
+		target = <&usbhost_dwc3_0>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};

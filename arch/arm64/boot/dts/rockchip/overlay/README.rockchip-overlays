@@ -1,1 +1,40 @@
-####
+Rockchip RK3588 Overlay Notes
+=============================
+
+This directory contains DT overlays (.dtbo) for RK3588 boards.
+
+CM5-CC overlays
+---------------
+
+- rk3588-opicm5-cc-usb-net.dtbo
+	Keep USB host data paths enabled for USB Wi-Fi/Ethernet dongles.
+
+- rk3588-opicm5-cc-lcd.dtbo
+	Enable DSI LCD + touch panel path.
+
+- rk3588-opicm5-cc-audio-es8388.dtbo
+	Enable ES8388 audio path.
+
+- rk3588-opicm5-cc-pcie2x1l2.dtbo
+	Enable PCIe2x1 lane2 host controller.
+
+- rk3588-opicm5-cc-wireless-sdio.dtbo
+	Optional: enable onboard SDIO WLAN/BT path.
+
+- rk3588-uart2-m1.dtbo
+	Enable UART2 with M1 pinmux and disable fiq_debugger.
+
+Default template
+----------------
+
+See rk3588-opicm5-cc-default-overlays.txt for a ready-to-copy template
+that can be merged into boot environment configuration (for example,
+orangepiEnv.txt).
+
+Typical usage uses overlay_prefix and overlays entries, e.g.:
+
+	overlay_prefix=rk3588
+	overlays=opicm5-cc-usb-net
+
+The selected overlays remain editable in the image and can be changed
+without rebuilding the kernel image.

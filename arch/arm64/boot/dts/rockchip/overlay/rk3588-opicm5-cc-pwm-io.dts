@@ -1,0 +1,26 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	/*
+	 * Prioritize external PWM pinout on CM5-CC header:
+	 * - PWM3-M3  -> GPIO1_A7
+	 * - PWM15-M2 -> GPIO1_C6
+	 * Keep onboard fan path enabled for fan control usage.
+	 */
+	fragment@0 {
+		target = <&pwm3>;
+		__overlay__ {
+			status = "okay";
+			pinctrl-0 = <&pwm3m3_pins>;
+		};
+	};
+
+	fragment@1 {
+		target = <&pwm15>;
+		__overlay__ {
+			status = "okay";
+			pinctrl-0 = <&pwm15m2_pins>;
+		};
+	};
+};

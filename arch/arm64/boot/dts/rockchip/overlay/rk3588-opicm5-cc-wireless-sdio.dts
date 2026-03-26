@@ -1,0 +1,33 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	/* Optional: enable onboard SDIO Wi-Fi/BT path when module is populated */
+	fragment@0 {
+		target = <&sdio>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@1 {
+		target = <&wireless_wlan>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@2 {
+		target = <&wireless_bluetooth>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@3 {
+		target = <&uart9>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};

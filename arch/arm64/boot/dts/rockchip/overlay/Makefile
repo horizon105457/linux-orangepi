@@ -35,6 +35,7 @@ dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
 	rk3588-pwm15-m3.dtbo \
 	rk3588-uart0-m2.dtbo \
 	rk3588-uart1-m1.dtbo \
+	rk3588-uart2-m1.dtbo \
 	rk3588-uart2-m0.dtbo \
 	rk3588-uart3-m0.dtbo \
 	rk3588-uart3-m1.dtbo \
@@ -108,13 +109,20 @@ dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
 	rk3588-opicm5-tablet-cam2.dtbo \
 	rk3588-opicm5-tablet-cam3.dtbo \
 	rk3588-opicm5-tablet-lcd.dtbo \
-	rk3588-opicm5-tablet-disable-leds.dtbo
+	rk3588-opicm5-tablet-disable-leds.dtbo \
+	rk3588-opicm5-cc-usb-net.dtbo \
+	rk3588-opicm5-cc-lcd.dtbo \
+	rk3588-opicm5-cc-pwm-io.dtbo \
+	rk3588-opicm5-cc-audio-es8388.dtbo \
+	rk3588-opicm5-cc-pcie2x1l2.dtbo \
+	rk3588-opicm5-cc-wireless-sdio.dtbo
 
 scr-$(CONFIG_ARCH_ROCKCHIP) += \
 	rk3588-fixup.scr
 
 dtbotxt-$(CONFIG_ARCH_ROCKCHIP) += \
-	README.rockchip-overlays
+	README.rockchip-overlays \
+	rk3588-opicm5-cc-default-overlays.txt
 
 targets += $(dtbo-y) $(scr-y) $(dtbotxt-y)
 
