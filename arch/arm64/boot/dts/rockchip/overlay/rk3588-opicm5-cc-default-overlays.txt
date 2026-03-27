@@ -4,10 +4,11 @@
 # then reboot. Keep overlays editable in image for runtime changes.
 #
 # overlay_prefix=rk3588
-# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart2-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev
+# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev
+# Note: CM5-CC default profile does not include UART2 overlays.
 #
 # Optional overlays (append as needed):
-# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart2-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-lcd
-# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart2-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-audio-es8388
-# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart2-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-pcie2x1l2
-# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart2-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-wireless-sdio
+# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-lcd
+# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-audio-es8388
+# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-pcie2x1l2
+# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-wireless-sdio

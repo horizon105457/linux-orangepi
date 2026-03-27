@@ -21,8 +21,8 @@ CM5-CC overlays
 - rk3588-opicm5-cc-wireless-sdio.dtbo
 	Optional: enable onboard SDIO WLAN/BT path.
 
-- rk3588-uart2-m1.dtbo
-	Enable UART2 with M1 pinmux and disable fiq_debugger.
+- UART2 overlays are intentionally not part of the CM5-CC default recommendation
+	because this UART is commonly reserved for debug and may conflict with board use.
 
 Default template
 ----------------
