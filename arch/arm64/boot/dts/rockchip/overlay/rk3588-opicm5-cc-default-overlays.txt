@@ -4,11 +4,36 @@
 # then reboot. Keep overlays editable in image for runtime changes.
 #
 # overlay_prefix=rk3588
-# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev
-# Note: CM5-CC default profile does not include UART2 overlays.
+# overlays=opicm5-cc-usb-net opicm5-cc-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev
+# Note: CM5-CC default profile does not include UART2 overlays; see pin map below.
 #
-# Optional overlays (append as needed):
-# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-lcd
-# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-audio-es8388
-# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-pcie2x1l2
-# overlays=opicm5-cc-usb-net opicm5-tablet-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-wireless-sdio
+# ============================================================================
+# CM5-CC 40-pin header overlay quick reference
+# ============================================================================
+# overlay              GPIO (function)                 SoC ball / alt
+# -------------------  ------------------------------  --------------------
+# uart1-m1             GPIO2_A6 (TX), GPIO2_A7 (RX)
+# uart4-m2             GPIO3_A0 (TX), GPIO3_A1 (RX)
+# uart6-m2             GPIO1_D6 (TX), GPIO1_D7 (RX)
+# uart7-m2             GPIO3_B0 (TX), GPIO3_B1 (RX)
+# can1-m1              GPIO2_B3 (TX), GPIO2_B4 (RX)
+# spi1-m2-cs0-spidev   GPIO2_C6 (CLK), GPIO2_C7 (MOSI),
+#                      GPIO2_D0 (MISO), GPIO2_D1 (CS0)
+# pwm3-m3              GPIO1_A7
+# pwm15-m2             GPIO1_C6
+# i2c1-m2              GPIO1_D0 (SDA), GPIO1_D1 (SCL)
+# opicm5-cc-usb-net    —                        USB 2.0/3.0 host ports
+# opicm5-cc-lcd        —                        MIPI DSI + touch panel
+# opicm5-cc-audio-es8388  —                     ES8388 codec (headphone jack)
+# opicm5-cc-pwm-io     —                        External PWM3/PWM15 pins
+# opicm5-cc-pcie2x1l2  —                        PCIe 2.0 x1 (M.2 E-key)
+# opicm5-cc-wireless-sdio  —                    SDIO Wi-Fi/BT module
+# opicm5-cc-cam1       —                        CSI D-PHY0 (cam1 path)
+# opicm5-cc-cam2       —                        CSI C-PHY0 (cam2 path)
+# opicm5-cc-cam3       —                        CSI C-PHY1 (cam3 path)
+#
+# Optional overlay combinations (append any of these to the base line):
+# overlays=opicm5-cc-usb-net opicm5-cc-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-lcd
+# overlays=opicm5-cc-usb-net opicm5-cc-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-audio-es8388
+# overlays=opicm5-cc-usb-net opicm5-cc-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-pcie2x1l2
+# overlays=opicm5-cc-usb-net opicm5-cc-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-wireless-sdio
