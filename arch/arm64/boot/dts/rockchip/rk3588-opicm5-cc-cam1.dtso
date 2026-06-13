@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Enable CSI camera path 1 on Orange Pi CM5-CC.
+ *
+ * Enables CSI D-PHY0 and I2C1 sensor (OV5647/IMX219).
+ *
+ * Note: Full ISP pipeline (rkcif → rkisp1) requires driver support
+ * that is not yet present in mainline 6.18 for RK3588. This overlay
+ * enables the physical layer and sensor for I2C probe validation.
+ * When the vendor ISP drivers are backported, add the following
+ * targets to this overlay:
+ *   &mipi2_csi2, &rkcif_mipi_lvds2, &rkisp0_vir1, &rkcif, &rkisp0
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&i2c1>;
+		__overlay__ {
+			status = "okay";
+
+			ov5647_cam1: ov5647-cam1@36 {
+				status = "okay";
+			};
+
+			imx219_cam1: imx219-cam1@10 {
+				status = "okay";
+			};
+		};
+	};
+};

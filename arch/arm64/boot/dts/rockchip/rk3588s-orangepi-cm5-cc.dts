@@ -67,6 +67,12 @@
 		vin-supply = <&vcc5v0_sys>;
 	};
 
+	ext_cam_ov5647_clk: clk-ext-camera {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <24000000>;
+	};
+
 	vbus5v0_typec: regulator-vbus-5v0-typec {
 		compatible = "regulator-fixed";
 		regulator-name = "vbus5v0_typec";
@@ -581,6 +587,52 @@
 	status = "okay";
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c1m2_xfer>;
+
+	/*
+	 * CSI camera sensors on I2C1 (disabled by default, enable via overlay).
+	 *
+	 * Full ISP pipeline requires vendor driver backport for:
+	 *   mipi2_csi2, rkcif_mipi_lvds2, rkisp0_vir1, rkcif, rkisp0
+	 * These are NOT available in mainline 6.18 for RK3588.
+	 * The sensor definition here validates I2C probe only.
+	 * Once ISP pipeline drivers are backported, add remote-endpoint
+	 * references from the sensor port to the CSI-2 receiver's endpoint.
+	 */
+	ov5647_cam1: ov5647-cam1@36 {
+		status = "disabled";
+		compatible = "ovti,ov5647";
+		reg = <0x36>;
+		clocks = <&ext_cam_ov5647_clk>;
+		clock-names = "xvclk";
+		pwdn-gpios = <&gpio3 RK_PB0 GPIO_ACTIVE_HIGH>;
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+		rockchip,camera-module-name = "rpi-camera-v1";
+		rockchip,camera-module-lens-name = "default";
+		port {
+			ov5647_out: endpoint {
+				data-lanes = <1 2>;
+			};
+		};
+	};
+
+	imx219_cam1: imx219-cam1@10 {
+		status = "disabled";
+		compatible = "sony,imx219";
+		reg = <0x10>;
+		clocks = <&ext_cam_ov5647_clk>;
+		clock-names = "xvclk";
+		pwdn-gpios = <&gpio3 RK_PB0 GPIO_ACTIVE_HIGH>;
+		rockchip,camera-module-index = <0>;
+		rockchip,camera-module-facing = "back";
+		rockchip,camera-module-name = "rpi-camera-v2";
+		rockchip,camera-module-lens-name = "default";
+		port {
+			imx219_out: endpoint {
+				data-lanes = <1 2>;
+			};
+		};
+	};
 };
 
 &i2c7 {
@@ -626,6 +678,12 @@
 
 /* ========== Pin control ========== */
 &pinctrl {
+	camera {
+		cam1_pwdn: cam1-pwdn {
+			rockchip,pins = <3 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
 	rtc {
 		hym8563_int: hym8563-int {
 			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
@@ -643,4 +701,10 @@
 			rockchip,pins = <1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
+};
+
+/* ========== Camera / CSI ========== */
+/* CSI D-PHY0 physical layer */
+&csi_dphy0 {
+	status = "okay";
 };
