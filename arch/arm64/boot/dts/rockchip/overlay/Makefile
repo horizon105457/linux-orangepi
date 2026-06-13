@@ -105,8 +105,6 @@ dtbo-$(CONFIG_ARCH_ROCKCHIP) += \
 	rk3588-opicm5-cam3.dtbo \
 	rk3588-opicm5-cam4.dtbo \
 	rk3588-opicm5-cc-cam1.dtbo \
-	rk3588-opicm5-cc-cam2.dtbo \
-	rk3588-opicm5-cc-cam3.dtbo \
 	rk3588-opicm5-tablet-cam1.dtbo \
 	rk3588-opicm5-tablet-cam2.dtbo \
 	rk3588-opicm5-tablet-cam3.dtbo \

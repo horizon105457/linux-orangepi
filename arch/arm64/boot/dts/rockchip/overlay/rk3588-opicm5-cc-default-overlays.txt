@@ -28,9 +28,7 @@
 # opicm5-cc-pwm-io     —                        External PWM3/PWM15 pins
 # opicm5-cc-pcie2x1l2  —                        PCIe 2.0 x1 (M.2 E-key)
 # opicm5-cc-wireless-sdio  —                    SDIO Wi-Fi/BT module
-# opicm5-cc-cam1       —                        CSI D-PHY0 (cam1 path)
-# opicm5-cc-cam2       —                        CSI C-PHY0 (cam2 path)
-# opicm5-cc-cam3       —                        CSI C-PHY1 (cam3 path)
+# opicm5-cc-cam1       —                        CSI D-PHY0 (cam1 path, I2C1)
 #
 # Optional overlay combinations (append any of these to the base line):
 # overlays=opicm5-cc-usb-net opicm5-cc-cam1 can1-m1 uart1-m1 uart6-m1 uart4-m2 opicm5-cc-pwm-io spi1-m2-cs0-spidev opicm5-cc-lcd
