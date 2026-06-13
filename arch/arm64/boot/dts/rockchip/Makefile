@@ -205,6 +205,8 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-5b.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-roc-pc.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-rock-5a.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-rock-5c.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-cm5-cc.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-cm5-cc.dtb
 
 # Overlay application tests
 #
