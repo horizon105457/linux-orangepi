@@ -164,7 +164,7 @@ else
 	debian_revision=$("${srctree}/scripts/build-version")
 	packageversion=${upstream_version}-${debian_revision}
 fi
-sourcename=${KDEB_SOURCENAME:-linux-upstream}
+sourcename=${KDEB_SOURCENAME:-linux-${KERNELRELEASE}}
 
 if [ "$ARCH" = "um" ] ; then
 	packagename=user-mode-linux

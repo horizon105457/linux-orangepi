@@ -157,6 +157,9 @@ install_linux_dtb () {
 		return
 	fi
 
+	# Create DEBIAN control directory before writing maintainer scripts
+	mkdir -p "${pdir}/DEBIAN"
+
 	# Install dtbs to /boot/dtb-${KERNELRELEASE} (armbian/orangepi convention)
 	mkdir -p "${pdir}/boot/dtb-${KERNELRELEASE}"
 	INSTALL_DTBS_PATH="${pdir}/boot/dtb-${KERNELRELEASE}" \
