@@ -30,11 +30,6 @@ install_linux_image () {
 	pname=$1
 	pdir=debian/$1
 
-	# Only some architectures with OF support have this target
-	if is_enabled CONFIG_OF_EARLY_FLATTREE && [ -d "${srctree}/arch/${SRCARCH}/boot/dts" ]; then
-		${MAKE} -f ${srctree}/Makefile INSTALL_DTBS_PATH="${pdir}/usr/lib/linux-image-${KERNELRELEASE}" dtbs_install
-	fi
-
 	${MAKE} -f ${srctree}/Makefile INSTALL_MOD_PATH="${pdir}" INSTALL_MOD_STRIP=1 modules_install
 	rm -f "${pdir}/lib/modules/${KERNELRELEASE}/build"
 
@@ -137,12 +132,11 @@ install_linux_image_dbg () {
 
 install_kernel_headers () {
 	pdir=debian/$1
-	version=${1#linux-headers-}
 
-	CC="${DEB_HOST_GNU_TYPE}-gcc" "${srctree}/scripts/package/install-extmod-build" "${pdir}/usr/src/linux-headers-${version}"
+	CC="${DEB_HOST_GNU_TYPE}-gcc" "${srctree}/scripts/package/install-extmod-build" "${pdir}/usr/src/linux-headers-${KERNELRELEASE}"
 
-	mkdir -p $pdir/lib/modules/$version/
-	ln -s /usr/src/linux-headers-$version $pdir/lib/modules/$version/build
+	mkdir -p $pdir/lib/modules/${KERNELRELEASE}/
+	ln -s /usr/src/linux-headers-${KERNELRELEASE} $pdir/lib/modules/${KERNELRELEASE}/build
 }
 
 install_libc_headers () {
@@ -156,6 +150,37 @@ install_libc_headers () {
 	mv "$pdir/usr/include/asm" "$pdir/usr/include/${DEB_HOST_MULTIARCH}"
 }
 
+install_linux_dtb () {
+	pdir="debian/$1"
+
+	if ! is_enabled CONFIG_OF; then
+		return
+	fi
+
+	# Install dtbs to /boot/dtb-${KERNELRELEASE} (armbian/orangepi convention)
+	mkdir -p "${pdir}/boot/dtb-${KERNELRELEASE}"
+	INSTALL_DTBS_PATH="${pdir}/boot/dtb-${KERNELRELEASE}" \
+		${MAKE} -f ${srctree}/Makefile dtbs_install
+
+	# Add postinst/prerm to manage /boot/dtb symlink
+	cat >> "${pdir}/DEBIAN/postinst" <<-EOT
+#!/bin/sh
+set -e
+cd /boot
+ln -sfT dtb-${KERNELRELEASE} dtb 2>/dev/null || mv dtb-${KERNELRELEASE} dtb
+exit 0
+EOT
+	chmod 755 "${pdir}/DEBIAN/postinst"
+
+	cat >> "${pdir}/DEBIAN/prerm" <<-EOT
+#!/bin/sh
+set -e
+rm -f /boot/dtb
+exit 0
+EOT
+	chmod 755 "${pdir}/DEBIAN/prerm"
+}
+
 package=$1
 
 case "${package}" in
@@ -167,4 +192,6 @@ linux-libc-dev)
 	install_libc_headers "${package}";;
 linux-headers-*)
 	install_kernel_headers "${package}";;
+linux-dtb-*)
+	install_linux_dtb "${package}";;
 esac

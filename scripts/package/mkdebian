@@ -169,8 +169,10 @@ sourcename=${KDEB_SOURCENAME:-linux-upstream}
 if [ "$ARCH" = "um" ] ; then
 	packagename=user-mode-linux
 else
-	packagename=linux-image
+	packagename=linux-image-${BRANCH}${LOCALVERSION}
 fi
+kernel_headers_packagename=linux-headers-${BRANCH}${LOCALVERSION}
+dtb_packagename=linux-dtb-${BRANCH}${LOCALVERSION}
 
 debarch=
 set_debarch
@@ -215,7 +217,7 @@ Build-Depends-Arch: bc, bison, flex,
  python3:native, rsync
 Homepage: https://www.kernel.org/
 
-Package: $packagename-${KERNELRELEASE}
+Package: $packagename
 Architecture: $debarch
 Description: Linux kernel, version ${KERNELRELEASE}
  This package contains the Linux kernel, modules and corresponding other
@@ -223,6 +225,14 @@ Description: Linux kernel, version ${KERNELRELEASE}
 EOF
 
 if [ "${SRCARCH}" != um ]; then
+cat <<EOF >> debian/control
+
+Package: $dtb_packagename
+Architecture: $debarch
+Description: Linux DTB, version ${KERNELRELEASE}
+ This package contains device blobs from the Linux kernel, version ${KERNELRELEASE}.
+EOF
+
 cat <<EOF >> debian/control
 
 Package: linux-libc-dev
@@ -238,7 +248,7 @@ EOF
 if is_enabled CONFIG_MODULES; then
 cat <<EOF >> debian/control
 
-Package: linux-headers-${KERNELRELEASE}
+Package: $kernel_headers_packagename
 Architecture: $debarch
 Build-Profiles: <!pkg.${sourcename}.nokernelheaders>
 Description: Linux kernel headers for ${KERNELRELEASE} on $debarch
@@ -252,7 +262,7 @@ fi
 if is_enabled CONFIG_DEBUG_INFO; then
 cat <<EOF >> debian/control
 
-Package: linux-image-${KERNELRELEASE}-dbg
+Package: $packagename-dbg
 Section: debug
 Architecture: $debarch
 Build-Profiles: <!pkg.${sourcename}.nokerneldbg>
