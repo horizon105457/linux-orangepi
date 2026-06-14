@@ -133,6 +133,40 @@
 		>;
 	};
 
+	sdio_pwrseq: sdio-pwrseq {
+		compatible = "mmc-pwrseq-simple";
+		clocks = <&hym8563>;
+		clock-names = "ext_clock";
+		pinctrl-names = "default";
+		pinctrl-0 = <&wifi_enable_h>;
+		post-power-on-delay-ms = <200>;
+		reset-gpios = <&gpio0 RK_PD0 GPIO_ACTIVE_LOW>;
+	};
+
+	wireless_bluetooth: wireless-bluetooth {
+		compatible = "bluetooth-platdata";
+		clocks = <&hym8563>;
+		clock-names = "ext_clock";
+		uart_rts_gpios = <&gpio3 RK_PD2 GPIO_ACTIVE_LOW>;
+		pinctrl-names = "default", "rts_gpio";
+		pinctrl-0 = <&uart9m2_rtsn>,  <&bt_reset_gpio>, <&bt_wake_gpio>, <&bt_irq_gpio>;
+		pinctrl-1 = <&uart9_gpios>;
+		BT,reset_gpio    = <&gpio0 RK_PD3 GPIO_ACTIVE_HIGH>;
+		BT,wake_gpio     = <&gpio0 RK_PC6 GPIO_ACTIVE_HIGH>;
+		BT,wake_host_irq = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
+		status = "disabled";
+	};
+
+	wireless_wlan: wireless-wlan {
+		compatible = "wlan-platdata";
+		wifi_chip_type = "ap6256";
+		pinctrl-names = "default";
+		pinctrl-0 = <&wifi_host_wake_irq>;
+		WIFI,host_wake_irq = <&gpio0 RK_PA0 GPIO_ACTIVE_HIGH>;
+		WIFI,poweren_gpio = <&gpio0 RK_PD0 GPIO_ACTIVE_HIGH>;
+		status = "disabled";
+	};
+
 	vbus5v0_typec: regulator-vbus-5v0-typec {
 		compatible = "regulator-fixed";
 		regulator-name = "vbus5v0_typec";
@@ -640,6 +674,95 @@
 	status = "okay";
 };
 
+/* ========== SDIO Wi-Fi/BT ========== */
+&sdio {
+	max-frequency = <150000000>;
+	no-sd;
+	no-mmc;
+	bus-width = <4>;
+	disable-wp;
+	cap-sd-highspeed;
+	cap-sdio-irq;
+	keep-power-in-suspend;
+	mmc-pwrseq = <&sdio_pwrseq>;
+	non-removable;
+	pinctrl-names = "default";
+	pinctrl-0 = <&sdiom1_pins>;
+	sd-uhs-sdr104;
+	status = "disabled";
+};
+
+/* ========== UARTs (40-pin header) ========== */
+&uart1 {
+	status = "disabled";
+	pinctrl-0 = <&uart1m1_xfer>;
+};
+
+&uart4 {
+	status = "disabled";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart4m2_xfer>;
+};
+
+&uart6 {
+	status = "disabled";
+	pinctrl-0 = <&uart6m2_xfer>;
+};
+
+&uart7 {
+	status = "disabled";
+	pinctrl-0 = <&uart7m2_xfer>;
+};
+
+&uart9 {
+	status = "disabled";
+	pinctrl-names = "default";
+	pinctrl-0 = <&uart9m2_xfer &uart9m2_ctsn>;
+};
+
+/* ========== PWM expansion pins ========== */
+&pwm0 {
+	pinctrl-names = "active";
+	pinctrl-0 = <&pwm0m1_pins>;
+	status = "disabled";
+};
+
+&pwm1 {
+	pinctrl-names = "active";
+	pinctrl-0 = <&pwm1m2_pins>;
+	status = "disabled";
+};
+
+&pwm3 {
+	status = "disabled";
+	pinctrl-0 = <&pwm3m3_pins>;
+};
+
+&pwm13 {
+	pinctrl-names = "active";
+	pinctrl-0 = <&pwm13m2_pins>;
+	status = "disabled";
+};
+
+/* ========== SPI ========== */
+&spi0 {
+	status = "disabled";
+	assigned-clocks = <&cru CLK_SPI0>;
+	assigned-clock-rates = <200000000>;
+	num-cs = <2>;
+};
+
+&spi1 {
+	status = "disabled";
+	assigned-clocks = <&cru CLK_SPI1>;
+	assigned-clock-rates = <200000000>;
+};
+
+/* ========== MIPI DSI (via overlay) ========== */
+&dsi1 {
+	status = "disabled";
+};
+
 /* ========== I2C / RTC ========== */
 &i2c0 {
 	status = "okay";
@@ -870,6 +993,36 @@
 	charger {
 		charger_ok: charger-ok {
 			rockchip,pins = <1 RK_PC0 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	sdio-pwrseq {
+		wifi_enable_h: wifi-enable-h {
+			rockchip,pins = <0 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	wireless-bluetooth {
+		uart9_gpios: uart9-gpios {
+			rockchip,pins = <3 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		bt_reset_gpio: bt-reset-gpio {
+			rockchip,pins = <0 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		bt_wake_gpio: bt-wake-gpio {
+			rockchip,pins = <0 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+
+		bt_irq_gpio: bt-irq-gpio {
+			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+	};
+
+	wireless-wlan {
+		wifi_host_wake_irq: wifi-host-wake-irq {
+			rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 };
