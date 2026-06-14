@@ -73,6 +73,66 @@
 		clock-frequency = <24000000>;
 	};
 
+	es8388_sound: es8388-sound {
+		status = "disabled";
+		compatible = "rockchip,multicodecs-card";
+		rockchip,card-name = "rockchip,es8388";
+		hp-det-gpio = <&gpio3 RK_PC6 GPIO_ACTIVE_HIGH>;
+		io-channels = <&saradc 3>;
+		io-channel-names = "adc-detect";
+		keyup-threshold-microvolt = <1800000>;
+		poll-interval = <100>;
+		hp-con-gpio = <&gpio0 RK_PC2 GPIO_ACTIVE_HIGH>;
+		rockchip,format = "i2s";
+		rockchip,mclk-fs = <256>;
+		rockchip,cpu = <&i2s2_2ch>;
+		rockchip,codec = <&es8388>;
+		rockchip,audio-routing =
+			"Headphone", "LOUT1",
+			"Headphone", "ROUT1",
+			"Headphone", "Headphone Power",
+			"Headphone", "Headphone Power",
+			"LINPUT1", "Main Mic",
+			"LINPUT2", "Main Mic",
+			"RINPUT1", "Headset Mic",
+			"RINPUT2", "Headset Mic";
+		pinctrl-names = "default";
+		pinctrl-0 = <&hp_det>;
+		play-pause-key {
+			label = "playpause";
+			linux,code = <KEY_PLAYPAUSE>;
+			press-threshold-microvolt = <2000>;
+		};
+	};
+
+	leds: gpio-leds {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&led_gpio>;
+		status = "okay";
+
+		led@1 {
+			gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
+			label = "status_led";
+			linux,default-trigger = "heartbeat";
+		};
+	};
+
+	fan: pwm-fan {
+		compatible = "pwm-fan";
+		#cooling-cells = <2>;
+		pwms = <&pwm15 0 50000 0>;
+		cooling-levels = <0 50 100 150 200 255>;
+		rockchip,temp-trips = <
+			40000   2
+			50000   3
+			55000   4
+			60000   5
+			65000   5
+			70000   5
+		>;
+	};
+
 	vbus5v0_typec: regulator-vbus-5v0-typec {
 		compatible = "regulator-fixed";
 		regulator-name = "vbus5v0_typec";
@@ -526,7 +586,11 @@
 };
 
 &usb_host0_xhci {
-	dr_mode = "host";
+	dr_mode = "otg";
+	status = "okay";
+};
+
+&usbdp_phy0 {
 	status = "okay";
 };
 
@@ -635,6 +699,73 @@
 	};
 };
 
+&i2c3 {
+	status = "disabled";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c3m1_xfer>;
+
+	es8388: es8388@11 {
+		status = "disabled";
+		#sound-dai-cells = <0>;
+		compatible = "everest,es8388", "everest,es8328";
+		reg = <0x11>;
+		clocks = <&cru I2S0_8CH_MCLKOUT>;
+		clock-names = "mclk";
+		assigned-clocks = <&cru I2S0_8CH_MCLKOUT>;
+		assigned-clock-rates = <12288000>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2s2m1_mclk>;
+	};
+};
+
+&i2c6 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&i2c6m3_xfer>;
+
+	sc89890: sc89890@6a {
+		compatible = "sc,sc89890";
+		reg = <0x6a>;
+		status = "okay";
+		pinctrl-names = "default";
+		pinctrl-0 = <&charger_ok>;
+
+		interrupt-parent = <&gpio1>;
+		interrupts = <RK_PC0 IRQ_TYPE_EDGE_FALLING>;
+
+		sc,battery-regulation-voltage = <4350000>;
+		sc,charge-current = <4000000>;
+		sc,termination-current = <100000>;
+		sc,precharge-current = <500000>;
+		sc,minimum-sys-voltage = <3400000>;
+		sc,thermal-regulation-threshold = <4000000>;
+		sc,ibatcomp-clamp-microvolt = <100000>;
+		sc,ibatcomp-micro-ohms = <20>;
+	};
+
+	usbc0: fusb302@22 {
+		compatible = "fcs,fusb302";
+		reg = <0x22>;
+		interrupt-parent = <&gpio4>;
+		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_LOW>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&usbc0_int>;
+		vbus-supply = <&vbus5v0_typec>;
+		status = "okay";
+
+		usb_con: connector {
+			compatible = "usb-c-connector";
+			label = "USB-C";
+			data-role = "dual";
+			power-role = "dual";
+			try-power-role = "sink";
+			op-sink-microwatt = <1000000>;
+			sink-pdos = <PDO_FIXED(5000, 1000, PDO_FIXED_USB_COMM)>;
+			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
+		};
+	};
+};
+
 &i2c7 {
 	status = "okay";
 	pinctrl-names = "default";
@@ -671,8 +802,26 @@
 	pinctrl-0 = <&pwm14m0_pins>;
 };
 
-/* ========== Audio (HDMI, I2S) ========== */
+&pwm15 {
+	status = "okay";
+	pinctrl-names = "active";
+	pinctrl-0 = <&pwm15m2_pins>;
+};
+
+/* ========== Audio (I2S, SPDIF) ========== */
+&i2s2_2ch {
+	status = "okay";
+	pinctrl-0 = <&i2s2m1_lrck
+		     &i2s2m1_sclk
+		     &i2s2m1_sdi
+		     &i2s2m1_sdo>;
+};
+
 &i2s5_8ch {
+	status = "okay";
+};
+
+&spdif_tx2 {
 	status = "okay";
 };
 
@@ -694,11 +843,33 @@
 		typec5v_pwren: typec5v-pwren {
 			rockchip,pins = <4 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
+
+		usbc0_int: usbc0-int {
+			rockchip,pins = <4 RK_PA3 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
 	};
 
 	eth {
 		rgmii_phy_reset: rgmii-phy-reset {
 			rockchip,pins = <1 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	headphone {
+		hp_det: hp-det {
+			rockchip,pins = <3 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	leds {
+		led_gpio: led-gpio {
+			rockchip,pins = <4 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
+		};
+	};
+
+	charger {
+		charger_ok: charger-ok {
+			rockchip,pins = <1 RK_PC0 RK_FUNC_GPIO &pcfg_pull_up>;
 		};
 	};
 };
